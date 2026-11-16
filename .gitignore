@@ -1,0 +1,5 @@
+out
+.Xil
+*.log
+*.jou
+clockInfo.txt

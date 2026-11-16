@@ -1,0 +1,117 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "Run Synthesis",
+			"type": "shell",
+			"command": "vivado",
+			"args": [
+				"-mode",
+				"batch",
+				// "-notrace",
+				"-source",
+				"./scripts/synth.tcl"
+			],
+			"group": "build",
+			"presentation": {
+				"reveal": "always",
+				"panel": "shared"
+			},
+			"problemMatcher": {
+				"owner": "vivado-synth",
+				"fileLocation": [
+					"autoDetect",
+					"${workspaceFolder}"
+				],
+				"pattern": {
+					"regexp": "^(ERROR|CRITICAL WARNING|WARNING):\\s+\\[([^\\]]+)\\]\\s+(.*)\\s+\\[(.*):(\\d+)\\]$",
+					"severity": 1,
+					"code": 2,
+					"message": 3,
+					"file": 4,
+					"line": 5
+				}
+			}
+		},
+		{
+			"label": "Run Implementation",
+			"type": "shell",
+			"command": "vivado",
+			"args": [
+				"-mode",
+				"batch",
+				// "-notrace",
+				"-source",
+				"./scripts/impl.tcl"
+			],
+			"dependsOn": "Run Synthesis",
+			"group": "build",
+			"presentation": {
+				"reveal": "always",
+				"panel": "shared"
+			},
+			"problemMatcher": {
+				"owner": "vivado-impl",
+				"fileLocation": [
+					"autoDetect",
+					"${workspaceFolder}"
+				],
+				"pattern": {
+					"regexp": "^(ERROR|CRITICAL WARNING|WARNING):\\s+\\[([^\\]]+)\\]\\s+(.*)\\s+\\[(.*):(\\d+)\\]$",
+					"severity": 1,
+					"code": 2,
+					"message": 3,
+					"file": 4,
+					"line": 5
+				}
+			}
+		},
+		{
+			"label": "Generate Bitstream",
+			"type": "shell",
+			"command": "vivado",
+			"args": [
+				"-mode",
+				"batch",
+				// "-notrace",
+				"-source",
+				"./scripts/bitstream.tcl"
+			],
+			"dependsOn": "Run Implementation",
+			"group": {
+				"kind": "build",
+				"isDefault": true
+			},
+			"presentation": {
+				"reveal": "always",
+				"panel": "shared"
+			},
+			"problemMatcher": {
+				"owner": "vivado-bitstream",
+				"fileLocation": [
+					"autoDetect",
+					"${workspaceFolder}"
+				],
+				"pattern": {
+					"regexp": "^(ERROR|CRITICAL WARNING|WARNING):\\s+\\[([^\\]]+)\\]\\s+(.*)\\s+\\[(.*):(\\d+)\\]$",
+					"severity": 1,
+					"code": 2,
+					"message": 3,
+					"file": 4,
+					"line": 5
+				}
+			}
+		},
+		{
+			"label": "Program FPGA (openFPGALoader)",
+			"type": "shell",
+			"command": "openFPGALoader",
+			"args": [
+				"-b",
+				"basys3",
+				"./out/main.bit"
+			],
+			"group": "none"
+		}
+	]
+}
