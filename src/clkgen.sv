@@ -5,15 +5,19 @@
 // VCO = 100MHz * 6.25 / 1 = 625MHz
 //   CLKOUT0: 625 / 6.25 = 100MHz
 //   CLKOUT1: 625 / 125  = 5MHz
+//   CLKOUT2: 625 / 25   = 25MHz
 module clkgen (
     input  wire logic CLK100MRAW,
     output logic      CLK5M,
-    output logic      CLK100M
+    output logic      CLK100M,
+    output logic      CLK25M,
+    output logic      LOCKED
 );
   logic clkfbout;
   logic clkfbin;
   logic clk100m_unbuf;
   logic clk5m_unbuf;
+  logic clk25m_unbuf;
 
   MMCME2_BASE #(
       .BANDWIDTH         ("OPTIMIZED"),
@@ -28,6 +32,9 @@ module clkgen (
       .CLKOUT1_DIVIDE    (125),
       .CLKOUT1_PHASE     (0.000),
       .CLKOUT1_DUTY_CYCLE(0.500),
+      .CLKOUT2_DIVIDE    (25),
+      .CLKOUT2_PHASE     (0.000),
+      .CLKOUT2_DUTY_CYCLE(0.500),
       .STARTUP_WAIT      ("FALSE")
   ) mmcm (
       .CLKIN1   (CLK100MRAW),
@@ -38,14 +45,14 @@ module clkgen (
       .CLKOUT0B (),
       .CLKOUT1  (clk5m_unbuf),
       .CLKOUT1B (),
-      .CLKOUT2  (),
+      .CLKOUT2  (clk25m_unbuf),
       .CLKOUT2B (),
       .CLKOUT3  (),
       .CLKOUT3B (),
       .CLKOUT4  (),
       .CLKOUT5  (),
       .CLKOUT6  (),
-      .LOCKED   (),
+      .LOCKED   (LOCKED),
       .PWRDWN   (1'b0),
       .RST      (1'b0)
   );
@@ -61,6 +68,10 @@ module clkgen (
   BUFG buf5m (
       .I(clk5m_unbuf),
       .O(CLK5M)
+  );
+  BUFG buf25m (
+      .I(clk25m_unbuf),
+      .O(CLK25M)
   );
 endmodule
 
