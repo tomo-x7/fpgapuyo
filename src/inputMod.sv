@@ -5,35 +5,19 @@ module inputMod (
     input  logic        CLK5M,
     input  logic [15:0] SW,
     input  logic [ 4:0] BTN,
-    output logic        reqStart,
-    output logic        reqReset,
-    output logic        reqPause,
-    output logic        reqResume
+    output logic        BTNL,
+    output logic        BTNR
 );
   debounce1Clk d1 (
       .CLK5M,
-      .in (BTN[4]),
-      .out(reqStart)
+      .in (BTN[1]),
+      .out(BTNL)
   );
   debounce1Clk d2 (
       .CLK5M,
-      .in (BTN[3]),
-      .out(reqReset)
+      .in (BTN[2]),
+      .out(BTNR)
   );
-  debounce1Clk d3 (
-      .CLK5M,
-      .in (BTN[0]),
-      .out(reqPause)
-  );
-  debounce1Clk d4 (
-      .CLK5M,
-      .in (BTN[1]),
-      .out(reqResume)
-  );
-
-  always_ff @(posedge CLK5M) begin
-
-  end
 endmodule
 
 module debounce1Clk (
